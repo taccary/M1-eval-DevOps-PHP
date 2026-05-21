@@ -11,9 +11,6 @@
     "appServiceSkuName": {
       "value": "B1"
     },
-    "mysqlAdminLogin": {
-      "value": "adminretro"
-    },
     "phpVersion": {
       "value": "8.3"
     }

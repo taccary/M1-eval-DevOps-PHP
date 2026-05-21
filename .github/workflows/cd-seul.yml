@@ -9,16 +9,15 @@ env:
   RESOURCE_GROUP: rg1-retrogaming_votreNom
   LOCATION: swedencentral
   PROJECT_NAME: retrogamein
-  MYSQL_ADMIN_LOGIN: adminretro
 
 jobs:
-  # ── Job 1 : Déploiement de l'infrastructure via Bicep ──────────────────────
+  # -- Job 1 : Deploiement de l'infrastructure via Bicep ---------------------
   deploy-infra:
     name: Infrastructure (Bicep)
     runs-on: ubuntu-latest
     outputs:
       webAppName: ${{ steps.bicep.outputs.webAppName }}
-      webAppUrl: ${{ steps.bicep.outputs.webAppUrl }}
+      webAppUrl:  ${{ steps.bicep.outputs.webAppUrl }}
 
     steps:
       - uses: actions/checkout@v4
@@ -28,7 +27,7 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Déployer l'infrastructure Bicep
+      - name: Deployer l'infrastructure Bicep
         id: bicep
         uses: azure/arm-deploy@v2
         with:
@@ -38,108 +37,37 @@ jobs:
           parameters: >
             projectName=${{ env.PROJECT_NAME }}
             location=${{ env.LOCATION }}
-            mysqlAdminLogin=${{ env.MYSQL_ADMIN_LOGIN }}
-            mysqlAdminPassword=${{ secrets.MYSQL_ADMIN_PASSWORD }}
           failOnStdErr: false
 
-  # ── Job 2 : Packaging et déploiement du site PHP ──────────────────────────
+  # -- Job 2 : Generation SQLite + packaging + deploiement ------------------
   deploy-app:
-    name: Site PHP (ZIP deploy)
+    name: Site PHP + base SQLite (ZIP deploy)
     runs-on: ubuntu-latest
     needs: deploy-infra
 
     steps:
       - uses: actions/checkout@v4
 
+      - name: Generer la base SQLite depuis le dump MySQL
+        run: |
+          python3 database/scripts/mysql2sqlite.py \
+            database/sources-sql/oceane.sql > /tmp/oceane-sqlite.sql
+          sqlite3 database/oceane.db < /tmp/oceane-sqlite.sql
+          echo "Base SQLite creee : $(du -sh database/oceane.db)"
+
+      - name: Creer l'archive ZIP (site/ + database/oceane.db)
+        run: zip -r app.zip site/ database/oceane.db
+
       - name: Azure Login
         uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Créer l'archive ZIP du site
-        run: |
-          cd site
-          zip -r ../app.zip .
-
-      - name: Déployer sur Azure App Service
+      - name: Deployer sur Azure App Service
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ needs.deploy-infra.outputs.webAppName }}
           package: app.zip
 
-      - name: URL du site déployé
+      - name: URL du site deploye
         run: echo "Site disponible sur ${{ needs.deploy-infra.outputs.webAppUrl }}"
-
-  # ── Job 3 : Initialisation de la base de données MySQL ────────────────────
-  deploy-database:
-    name: Base de données (SQL)
-    runs-on: ubuntu-latest
-    needs: deploy-infra
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Azure Login
-        uses: azure/login@v2
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-      - name: Installer le client MySQL
-        run: sudo apt-get install -y mysql-client
-
-      - name: Recréer la base de données (clean slate via Azure CLI)
-        run: |
-          az mysql flexible-server db delete \
-            --resource-group ${{ env.RESOURCE_GROUP }} \
-            --server-name ${{ env.PROJECT_NAME }}-mysql \
-            --database-name retrogamein \
-            --yes 2>/dev/null || true
-          az mysql flexible-server db create \
-            --resource-group ${{ env.RESOURCE_GROUP }} \
-            --server-name ${{ env.PROJECT_NAME }}-mysql \
-            --database-name retrogamein \
-            --charset utf8mb4 \
-            --collation utf8mb4_unicode_ci
-
-      - name: Ouvrir le pare-feu MySQL pour le runner
-        run: |
-          RUNNER_IP=$(curl -sf https://api.ipify.org)
-          echo "IP du runner : $RUNNER_IP"
-          az mysql flexible-server firewall-rule create \
-            --resource-group ${{ env.RESOURCE_GROUP }} \
-            --name ${{ env.PROJECT_NAME }}-mysql \
-            --rule-name AllowGitHubRunner \
-            --start-ip-address "$RUNNER_IP" \
-            --end-ip-address "$RUNNER_IP"
-
-      - name: Exécuter le script SQL
-        run: |
-          mysql \
-            --host="${{ env.PROJECT_NAME }}-mysql.mysql.database.azure.com" \
-            --user="${{ env.MYSQL_ADMIN_LOGIN }}" \
-            --password="${{ secrets.MYSQL_ADMIN_PASSWORD }}" \
-            --ssl-mode=REQUIRED \
-            < database/retrogamein.sql
-
-      - name: Créer l'utilisateur applicatif MySQL
-        run: |
-          mysql \
-            --host="${{ env.PROJECT_NAME }}-mysql.mysql.database.azure.com" \
-            --user="${{ env.MYSQL_ADMIN_LOGIN }}" \
-            --password="${{ secrets.MYSQL_ADMIN_PASSWORD }}" \
-            --ssl-mode=REQUIRED \
-            --execute="
-              DROP USER IF EXISTS 'retrogamein-web'@'%';
-              CREATE USER 'retrogamein-web'@'%' IDENTIFIED BY '${{ secrets.MYSQL_WEB_PASSWORD }}';
-              GRANT SELECT ON retrogamein.* TO 'retrogamein-web'@'%';
-              FLUSH PRIVILEGES;
-            "
-
-      - name: Fermer le pare-feu MySQL (toujours exécuté)
-        if: always()
-        run: |
-          az mysql flexible-server firewall-rule delete \
-            --resource-group ${{ env.RESOURCE_GROUP }} \
-            --name ${{ env.PROJECT_NAME }}-mysql \
-            --rule-name AllowGitHubRunner \
-            --yes
