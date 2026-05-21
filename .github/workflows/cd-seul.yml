@@ -8,7 +8,7 @@ on:
 env:
   RESOURCE_GROUP: rg1-retrogaming_votreNom
   LOCATION: swedencentral
-  PROJECT_NAME: retrogamein
+  PROJECT_NAME: oceane
 
 jobs:
   # -- Job 1 : Deploiement de l'infrastructure via Bicep ---------------------
