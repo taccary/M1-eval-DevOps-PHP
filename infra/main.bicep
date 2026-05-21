@@ -40,7 +40,7 @@ resource webApp 'Microsoft.Web/sites@2023-01-01' = {
       linuxFxVersion: 'PHP|${phpVersion}'
       appSettings: [
         {
-          name: 'WEBSITE_DOCUMENT_ROOT'
+          name: 'APACHE_DOCUMENT_ROOT'
           value: '/home/site/wwwroot/site'
         }
       ]
