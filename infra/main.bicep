@@ -40,8 +40,8 @@ resource webApp 'Microsoft.Web/sites@2023-01-01' = {
       linuxFxVersion: 'PHP|${phpVersion}'
       appSettings: [
         {
-          name: 'APACHE_DOCUMENT_ROOT'
-          value: '/home/site/wwwroot/site'
+          name: 'SQLITE_DB_PATH'
+          value: '/home/site/wwwroot/database/oceane.db'
         }
       ]
     }

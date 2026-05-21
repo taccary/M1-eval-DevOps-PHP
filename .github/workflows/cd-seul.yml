@@ -51,8 +51,10 @@ jobs:
       - name: Installer les dependances Composer (assets front-end)
         run: composer install --no-dev --no-interaction --prefer-dist
 
-      - name: Creer l'archive ZIP (site/ + database/oceane.db)
-        run: zip -r app.zip site/ database/oceane.db
+      - name: Creer l'archive ZIP (fichiers PHP a la racine + database/)
+        run: |
+          cd site && zip -r ../app.zip . && cd ..
+          zip app.zip database/oceane.db
 
       - name: Azure Login
         uses: azure/login@v2
