@@ -6,7 +6,6 @@ try {
     $connexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $connexion->exec('PRAGMA foreign_keys = ON;'); // activer les clés étrangères SQLite
 } catch (Exception $e) {
-    echo 'Une erreur de connexion à la BDD est survenue !';
+    echo 'Une erreur de connexion à la BDD est survenue !!!';
     die();
 }
-?>
