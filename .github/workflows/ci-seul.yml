@@ -2,7 +2,7 @@ name: CI - Validation PHP Retrogaming
 
 on:
   push:
-    branches: [ "master" ]
+    branches: ["main"]
 
 jobs:
   php-lint:
@@ -15,7 +15,7 @@ jobs:
       - name: Installation de PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2' # À adapter selon la version utilisée en cours
+          php-version: "8.2" # À adapter selon la version utilisée en cours
 
       - name: Analyse syntaxique (Lint)
         # Cette commande cherche tous les fichiers .php et vérifie leur syntaxe [1, 2]
