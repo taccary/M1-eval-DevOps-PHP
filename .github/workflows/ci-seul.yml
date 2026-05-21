@@ -1,0 +1,22 @@
+name: CI - Validation PHP Retrogaming
+
+on:
+  push:
+    branches: [ "master" ]
+
+jobs:
+  php-lint:
+    name: Vérification syntaxique PHP
+    runs-on: ubuntu-latest
+    steps:
+      - name: Récupération du code
+        uses: actions/checkout@v4
+
+      - name: Installation de PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2' # À adapter selon la version utilisée en cours
+
+      - name: Analyse syntaxique (Lint)
+        # Cette commande cherche tous les fichiers .php et vérifie leur syntaxe [1, 2]
+        run: find . -name "*.php" -exec php -l {} \;
