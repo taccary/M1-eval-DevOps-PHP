@@ -1,0 +1,12 @@
+# Dépendances Composer PHP
+vendor/
+
+# Assets front-end gérés par Composer
+site/vendor/
+
+# Lock file généré localement (optionnel : à versionner en production)
+# composer.lock
+
+# Base de données SQLite (générée au déploiement)
+database/oceane.db
+database/sources-sql/oceane-sqlite.sql

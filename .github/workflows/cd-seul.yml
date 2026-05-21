@@ -48,12 +48,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Generer la base SQLite depuis le dump MySQL
-        run: |
-          python3 database/scripts/mysql2sqlite.py \
-            database/sources-sql/oceane.sql > /tmp/oceane-sqlite.sql
-          sqlite3 database/oceane.db < /tmp/oceane-sqlite.sql
-          echo "Base SQLite creee : $(du -sh database/oceane.db)"
+      - name: Installer les dependances Composer (assets front-end)
+        run: composer install --no-dev --no-interaction --prefer-dist
 
       - name: Creer l'archive ZIP (site/ + database/oceane.db)
         run: zip -r app.zip site/ database/oceane.db
