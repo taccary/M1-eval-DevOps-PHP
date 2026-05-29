@@ -16,6 +16,7 @@
 				// Éditeur : retour à la ligne automatique pour éviter le scroll horizontal
 				"editor.wordWrap": "on",
 				"editor.formatOnSave": true,
+				"files.insertFinalNewline": true,
 				"editor.tabSize": 4,
 				"editor.insertSpaces": false,
 				// PHP : formateur par défaut
@@ -32,10 +33,10 @@
 				"esbenp.prettier-vscode",
 				"neilbrayfield.php-docblocker",
 				"SonarSource.sonarlint-vscode",
-				"cweijan.vscode-mysql-client2",
 				"donjayamanne.githistory",
 				"Github.copilot",
-				"qwtel.sqlite-viewer"
+				"qwtel.sqlite-viewer",
+				"ms-azuretools.vscode-bicep"
 			]
 		}
 	},
@@ -54,7 +55,7 @@
 	},
 
 	// Commande exécutée à la fin de la création du conteneur
-   "postCreateCommand": "chmod +x start.sh && chmod +x stop.sh && ./start.sh",
+   "postCreateCommand": "chmod +x start.sh && chmod +x stop.sh && ./start.sh"
 
 	// Décommenter pour se connecter en root dans le conteneur (réf. : https://aka.ms/dev-containers-non-root)
 	// "remoteUser": "root"
