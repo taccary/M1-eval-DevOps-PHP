@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: ["main"]
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   php-lint:
     name: Vérification syntaxique PHP
@@ -27,23 +30,66 @@ jobs:
         run: php -S localhost:8080 -t site &
 
       - name: "Test – Accueil répond 200 et contient le bon titre"
+        id: test_accueil
         continue-on-error: true
         run: |
+          result="PASS"
           code=$(curl -s -o /dev/null -w "%{http_code}" "http://localhost:8080/index.php")
-          [ "$code" = "200" ] || (echo "ERREUR : HTTP $code" && exit 1)
+          if [ "$code" != "200" ]; then
+            echo "::error::Accueil : HTTP $code reçu, 200 attendu"
+            result="FAIL"
+          fi
           body=$(curl -sf "http://localhost:8080/index.php")
-          echo "$body" | grep -q "<title>Accueil</title>" || (echo "ERREUR : titre de la page d'accueil incorrect" && exit 1)
+          if ! echo "$body" | grep -q "<title>Accueil</title>"; then
+            echo "::error::Accueil : balise <title>Accueil</title> absente de la réponse"
+            result="FAIL"
+          fi
+          echo "result=$result" >> $GITHUB_OUTPUT
+          [ "$result" = "PASS" ]
 
       - name: "Test – Page qui n'existe pas répond 404"
+        id: test_404
         continue-on-error: true
         run: |
+          result="PASS"
           code=$(curl -s -o /dev/null -w "%{http_code}" "http://localhost:8080/nonexistent.php")
-          [ "$code" = "404" ] || (echo "ERREUR : HTTP $code au lieu de 404 pour une page inexistante" && exit 1)
+          if [ "$code" != "404" ]; then
+            echo "::error::404 : HTTP $code reçu, 404 attendu pour une page inexistante"
+            result="FAIL"
+          fi
+          echo "result=$result" >> $GITHUB_OUTPUT
+          [ "$result" = "PASS" ]
 
-      - name: "Test – Route qui n'existe pas renvoie la page d'erreur personnalisée et le code 404"
+      - name: "Test – Route inconnue renvoie la page d'erreur personnalisée"
+        id: test_route_inconnue
         continue-on-error: true
         run: |
-          code=$(curl -s -o /dev/null -w "%{http_code}" "http://localhost:8080/index.php?action=unknown")
-          [ "$code" = "404" ] || (echo "ERREUR : HTTP $code au lieu de 404 pour une route inconnue" && exit 1)
+          result="PASS"
           body=$(curl -sf "http://localhost:8080/index.php?action=unknown")
-          echo "$body" | grep -q "Page non trouvée" || (echo "ERREUR : page d'erreur personnalisée non trouvée" && exit 1)
+          if ! echo "$body" | grep -q "Page non trouvée"; then
+            echo "::error::Route inconnue : texte 'Page non trouvée' absent de la réponse"
+            result="FAIL"
+          fi
+          echo "result=$result" >> $GITHUB_OUTPUT
+          [ "$result" = "PASS" ]
+
+      - name: "Résumé des tests"
+        if: always()
+        run: |
+          r1="${{ steps.test_accueil.outputs.result }}"
+          r2="${{ steps.test_404.outputs.result }}"
+          r3="${{ steps.test_route_inconnue.outputs.result }}"
+          [ "$r1" = "PASS" ] && s1="✅ PASS" || s1="❌ FAIL"
+          [ "$r2" = "PASS" ] && s2="✅ PASS" || s2="❌ FAIL"
+          [ "$r3" = "PASS" ] && s3="✅ PASS" || s3="❌ FAIL"
+          {
+            echo "## Résultats des tests d'intégration"
+            echo ""
+            echo "| Test | Résultat |"
+            echo "|------|:--------:|"
+            echo "| Accueil répond 200 + titre correct | $s1 |"
+            echo "| Page inexistante répond 404 | $s2 |"
+            echo "| Route inconnue → page d'erreur personnalisée | $s3 |"
+          } >> "$GITHUB_STEP_SUMMARY"
+          # Faire échouer le job si au moins un test a échoué
+          [ "$r1" = "PASS" ] && [ "$r2" = "PASS" ] && [ "$r3" = "PASS" ]
