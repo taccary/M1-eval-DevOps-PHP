@@ -1,4 +1,4 @@
-name: CI - Validation PHP Retrogaming
+name: CI - Validation PHP
 
 on:
   push:
