@@ -52,7 +52,6 @@ jobs:
 
       - name: "Test – Page d'accueil répond 200 et contient le bon titre"
         id: test_accueil
-        continue-on-error: true
         run: |
           result="PASS"
           code=$(curl -s -o /dev/null -w "%{http_code}" "http://localhost:8080/index.php")
@@ -62,37 +61,32 @@ jobs:
           fi
           body=$(curl -sf "http://localhost:8080/index.php")
           if ! echo "$body" | grep -q "<title>Accueil</title>"; then
-            echo "::error::Accueil : balise <title>Accueil</title> absente de la réponse"
+            echo "::error::balise <title> absente ou incorrecte"
             result="FAIL"
           fi
           echo "result=$result" >> $GITHUB_OUTPUT
-          [ "$result" = "PASS" ]
 
       - name: "Test – Page qui n'existe pas répond 404"
         id: test_404
-        continue-on-error: true
         run: |
           result="PASS"
           code=$(curl -s -o /dev/null -w "%{http_code}" "http://localhost:8080/nonexistent.php")
           if [ "$code" != "404" ]; then
-            echo "::error::404 : HTTP $code reçu, 404 attendu pour une page inexistante"
+            echo "::error::HTTP $code reçu, 404 attendu pour une page inexistante"
             result="FAIL"
           fi
           echo "result=$result" >> $GITHUB_OUTPUT
-          [ "$result" = "PASS" ]
 
       - name: "Test – Route inconnue renvoie la page d'erreur personnalisée"
         id: test_route_inconnue
-        continue-on-error: true
         run: |
           result="PASS"
           code=$(curl -s -o /dev/null -w "%{http_code}" "http://localhost:8080/index.php?action=unknown")
           if [ "$code" != "404" ]; then
-            echo "::error::404 : HTTP $code reçu, 404 attendu pour une route inconnue"
+            echo "::error::HTTP $code reçu, 404 attendu pour une route inconnue"
             result="FAIL"
           fi
           echo "result=$result" >> $GITHUB_OUTPUT
-          [ "$result" = "PASS" ]
 
       - name: "Test - Page d'affichage des bateaux répond 200 et contient bien un tableau avec une colonne 'Nom du bateau'"
         id: test_bateaux
@@ -102,7 +96,6 @@ jobs:
       - name: "Résumé des tests"
         # TODO : une fois écrit, ajoutez le test du test_bateaux à ce résumé
         if: always()
-        continue-on-error: true
         run: |
           r1="${{ steps.test_accueil.outputs.result }}"
           r2="${{ steps.test_404.outputs.result }}"

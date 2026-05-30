@@ -61,8 +61,8 @@ jobs:
             result="FAIL"
           fi
           body=$(curl -sf "http://localhost:8080/index.php")
-          if ! echo "$body" | grep -q "<title>Accueil</title>"; then
-            echo "::error::Accueil : balise <title>Accueil</title> absente de la réponse"
+          if ! echo "$body" | grep -q "<title>Compagnie Océane - Accueil</title>"; then
+            echo "::error::Accueil : balise <title> absente ou incorrecte"
             result="FAIL"
           fi
           echo "result=$result" >> $GITHUB_OUTPUT
@@ -88,7 +88,7 @@ jobs:
           result="PASS"
           code=$(curl -s -o /dev/null -w "%{http_code}" "http://localhost:8080/index.php?action=unknown")
           if [ "$code" != "404" ]; then
-            echo "::error::404 : HTTP $code reçu, 404 attendu pour une route inconnue"
+            echo "::error::HTTP $code reçu, 404 attendu pour une route inconnue"
             result="FAIL"
           fi
           echo "result=$result" >> $GITHUB_OUTPUT
