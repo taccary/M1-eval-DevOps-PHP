@@ -1,0 +1,52 @@
+name: Deploy PHP Site to Azure
+
+on:
+  workflow_dispatch:
+
+env:
+  # TODO : remplacez votreNom par votre nom (ex: rg1-retrogaming_dupont)
+  RESOURCE_GROUP: # Nom de votre groupe de ressources Azure
+  LOCATION: # Région Azure de votre groupe de ressources (ex: francecentral)
+  PROJECT_NAME: # Nom de votre projet (ex: eval-devops-prenom)
+
+jobs:
+  # -- Job 1 : Deploiement de l'infrastructure via Bicep ---------------------
+  deploy-infra:
+    name: Infrastructure (Bicep)
+    runs-on: ubuntu-latest
+    outputs:
+      webAppName: ${{ steps.bicep.outputs.webAppName }}
+      webAppUrl: ${{ steps.bicep.outputs.webAppUrl }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # TODO : ajoutez l'étape de connexion à Azure (cf TP 3)
+
+      # TODO : ajoutez l'étape de déploiement du template Bicep (infra/main.bicep) en passant les paramètres projectName et location
+      # L'étape doit avoir l'id "bicep" pour que les outputs soient transmis au job suivant
+
+  # -- Job 2 : Packaging + déploiement (partie SQLite fournie) ---------------
+  deploy-app:
+    name: Site PHP + base SQLite (ZIP deploy)
+    runs-on: ubuntu-latest
+    needs: deploy-infra
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Installer les dependances Composer (assets front-end)
+        run: composer install --no-dev --no-interaction --prefer-dist
+
+      # Cette partie est spécifique à ce projet : la base SQLite oceane.db doit être embarquée dans le ZIP au même niveau que le dossier site/
+      - name: Creer l'archive ZIP (fichiers PHP + base SQLite)
+        run: |
+          cd site && zip -r ../app.zip . && cd ..
+          zip app.zip database/oceane.db
+
+      # TODO : ajoutez l'étape de connexion à Azure (même secret que le job 1)
+
+      # TODO : ajoutez l'étape de déploiement sur Azure App Service en utilisant le nom de la web app transmis par le job 1 (needs.deploy-infra.outputs.webAppName) et le fichier app.zip comme package
+
+      - name: URL du site deploye
+        run: echo "Site disponible sur ${{ needs.deploy-infra.outputs.webAppUrl }}"
