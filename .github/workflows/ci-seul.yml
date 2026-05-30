@@ -3,6 +3,8 @@ name: CI - Validation PHP Retrogaming
 on:
   push:
     branches: ["main"]
+  pull_request:
+    branches: ["main"]
 
 jobs:
   php-lint:
@@ -20,3 +22,25 @@ jobs:
       - name: Analyse syntaxique (Lint)
         # Cette commande cherche tous les fichiers .php et vérifie leur syntaxe [1, 2]
         run: find . -name "*.php" -exec php -l {} \;
+
+      - name: Démarrer le serveur PHP
+        run: php -S localhost:8080 -t site &
+
+      - name: "Test – Accueil répond 200 et contient le bon titre"
+        run: |
+          code=$(curl -s -o /dev/null -w "%{http_code}" "http://localhost:8080/index.php")
+          [ "$code" = "200" ] || (echo "ERREUR : HTTP $code" && exit 1)
+          body=$(curl -sf "http://localhost:8080/index.php")
+          echo "$body" | grep -q "<title>Accueil</title>" || (echo "ERREUR : titre de la page d'accueil incorrect" && exit 1)
+
+      - name: "Test – Page qui n'existe pas répond 404"
+        run: |
+          code=$(curl -s -o /dev/null -w "%{http_code}" "http://localhost:8080/nonexistent.php")
+          [ "$code" = "404" ] || (echo "ERREUR : HTTP $code au lieu de 404 pour une page inexistante" && exit 1)
+
+      - name: "Test – Route qui n'existe pas renvoie la page d'erreur personnalisée et le code 404"
+        run: |
+          code=$(curl -s -o /dev/null -w "%{http_code}" "http://localhost:8080/index.php?action=unknown")
+          [ "$code" = "404" ] || (echo "ERREUR : HTTP $code au lieu de 404 pour une route inconnue" && exit 1)
+          body=$(curl -sf "http://localhost:8080/index.php?action=unknown")
+          echo "$body" | grep -q "Page non trouvée" || (echo "ERREUR : page d'erreur personnalisée non trouvée" && exit 1)
