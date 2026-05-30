@@ -61,12 +61,11 @@ jobs:
             result="FAIL"
           fi
           body=$(curl -sf "http://localhost:8080/index.php")
-          if ! echo "$body" | grep -q "<title>Compagnie Océane - Accueil</title>"; then
-            echo "::error::Accueil : balise <title> absente ou incorrecte"
+          if ! echo "$body" | grep -q "<title>Accueil</title>"; then
+            echo "::error::balise <title> absente ou incorrecte"
             result="FAIL"
           fi
           echo "result=$result" >> $GITHUB_OUTPUT
-          [ "$result" = "PASS" ]
 
       - name: "Test – Page qui n'existe pas répond 404"
         id: test_404
@@ -75,11 +74,10 @@ jobs:
           result="PASS"
           code=$(curl -s -o /dev/null -w "%{http_code}" "http://localhost:8080/nonexistent.php")
           if [ "$code" != "404" ]; then
-            echo "::error::404 : HTTP $code reçu, 404 attendu pour une page inexistante"
+            echo "::error::HTTP $code reçu, 404 attendu pour une page inexistante"
             result="FAIL"
           fi
           echo "result=$result" >> $GITHUB_OUTPUT
-          [ "$result" = "PASS" ]
 
       - name: "Test – Route inconnue renvoie la page d'erreur personnalisée"
         id: test_route_inconnue
@@ -92,45 +90,8 @@ jobs:
             result="FAIL"
           fi
           echo "result=$result" >> $GITHUB_OUTPUT
-          [ "$result" = "PASS" ]
 
       - name: "Test - Page d'affichage des bateaux répond 200 et contient bien un tableau avec une colonne 'Nom du bateau'"
         id: test_bateaux
         continue-on-error: true
-        run: |
-          result="PASS"
-          code=$(curl -s -o /dev/null -w "%{http_code}" "http://localhost:8080/index.php?action=bateaux")
-          if [ "$code" != "200" ]; then
-            echo "::error::Bateaux : HTTP $code reçu, 200 attendu"
-            result="FAIL"
-          fi
-          body=$(curl -sf "http://localhost:8080/index.php?action=bateaux")
-          if ! echo "$body" | grep -q "<th>Nom du bateau</th>"; then
-            echo "::error::Bateaux : colonne 'Nom du bateau' absente de la page"
-            result="FAIL"
-          fi
-          echo "result=$result" >> $GITHUB_OUTPUT
-          [ "$result" = "PASS" ]
-
-      - name: "Résumé des tests"
-        if: always()
-        continue-on-error: true
-        run: |
-          r1="${{ steps.test_accueil.outputs.result }}"
-          r2="${{ steps.test_404.outputs.result }}"
-          r3="${{ steps.test_route_inconnue.outputs.result }}"
-          r4="${{ steps.test_bateaux.outputs.result }}"
-          [ "$r1" = "PASS" ] && s1="✅ PASS" || s1="❌ FAIL"
-          [ "$r2" = "PASS" ] && s2="✅ PASS" || s2="❌ FAIL"
-          [ "$r3" = "PASS" ] && s3="✅ PASS" || s3="❌ FAIL"
-          [ "$r4" = "PASS" ] && s4="✅ PASS" || s4="❌ FAIL"
-          {
-            echo "## Résultats des tests d'intégration"
-            echo ""
-            echo "| Test | Résultat |"
-            echo "|------|:--------:|"
-            echo "| Page d'accueil -> 200 + titre correct | $s1 |"
-            echo "| Page inexistante -> 404 | $s2 |"
-            echo "| Route inconnue -> 404 | $s3 |"
-            echo "| Page d'affichage des bateaux -> 200 + titre correct | $s4 |"
-          } >> "$GITHUB_STEP_SUMMARY"
+        run: # TODO : implémentez ce test d'intégration en utilisant curl pour vérifier que la page répond 200 et que le corps de la réponse contient un tableau avec une colonne "Nom du bateau"

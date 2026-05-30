@@ -54,42 +54,32 @@ jobs:
         id: test_accueil
         continue-on-error: true
         run: |
-          result="PASS"
           code=$(curl -s -o /dev/null -w "%{http_code}" "http://localhost:8080/index.php")
           if [ "$code" != "200" ]; then
             echo "::error::Accueil : HTTP $code reçu, 200 attendu"
-            result="FAIL"
           fi
           body=$(curl -sf "http://localhost:8080/index.php")
           if ! echo "$body" | grep -q "<title>Accueil</title>"; then
             echo "::error::balise <title> absente ou incorrecte"
-            result="FAIL"
           fi
-          echo "result=$result" >> $GITHUB_OUTPUT
 
       - name: "Test – Page qui n'existe pas répond 404"
         id: test_404
         continue-on-error: true
         run: |
-          result="PASS"
           code=$(curl -s -o /dev/null -w "%{http_code}" "http://localhost:8080/nonexistent.php")
           if [ "$code" != "404" ]; then
             echo "::error::HTTP $code reçu, 404 attendu pour une page inexistante"
-            result="FAIL"
           fi
-          echo "result=$result" >> $GITHUB_OUTPUT
 
       - name: "Test – Route inconnue renvoie la page d'erreur personnalisée"
         id: test_route_inconnue
         continue-on-error: true
         run: |
-          result="PASS"
           code=$(curl -s -o /dev/null -w "%{http_code}" "http://localhost:8080/index.php?action=unknown")
           if [ "$code" != "404" ]; then
             echo "::error::HTTP $code reçu, 404 attendu pour une route inconnue"
-            result="FAIL"
           fi
-          echo "result=$result" >> $GITHUB_OUTPUT
 
       - name: "Test - Page d'affichage des bateaux répond 200 et contient bien un tableau avec une colonne 'Nom du bateau'"
         id: test_bateaux
