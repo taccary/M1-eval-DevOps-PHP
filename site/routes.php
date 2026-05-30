@@ -9,6 +9,9 @@ $description = "";
 $affiche = "lostinspace.php";
 if (!isset($_GET['action'])) {
 	$affiche = "presentation.php";
+	$title = "Compagnie Océane - Accueil";
+	$keywords = "accueil compagnie Océane";
+	$description = "page d'accueil de la Compagnie Océane";
 } else {
 	switch ($_GET['action']) {
 		case (""):
