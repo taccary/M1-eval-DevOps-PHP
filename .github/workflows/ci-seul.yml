@@ -94,7 +94,13 @@ jobs:
           echo "result=$result" >> $GITHUB_OUTPUT
           [ "$result" = "PASS" ]
 
+      - name: "Test - Page d'affichage des bateaux répond 200 et contient bien un tableau avec une colonne 'Nom du bateau'"
+        id: test_bateaux
+        continue-on-error: true
+        run: # TODO : implémentez ce test d'intégration en utilisant curl pour vérifier que la page répond 200 et que le corps de la réponse contient un tableau avec une colonne "Nom du bateau"
+
       - name: "Résumé des tests"
+        # TODO : une fois écrit, ajoutez le test du test_bateaux à ce résumé
         if: always()
         continue-on-error: true
         run: |
