@@ -1,4 +1,4 @@
-name: Deploy PHP Site to Azure
+name: CD - Deploy PHP Site to Azure
 
 on:
   workflow_dispatch:

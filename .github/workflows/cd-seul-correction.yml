@@ -1,4 +1,4 @@
-name: Deploy PHP Site to Azure - correction
+name: CD - Deploy PHP Site to Azure - correction
 
 on:
   workflow_dispatch:
