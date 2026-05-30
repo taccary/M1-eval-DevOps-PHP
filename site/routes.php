@@ -37,7 +37,8 @@ if (!isset($_GET['action'])) {
 			$description = "Affichage des destinations des traversées de la Compagnie Océane";
 			break;
 		default:
-			$affiche = "lostinspace.php";
+			$affiche = "lostinspace.php"; // page d'erreur personnalisée pour les routes inconnues (retourne 200 pour eviter le scan des erreurs 404 par les bots)
+			$title = "Compagnie Océane - Oups !";
 	}
 }
 
