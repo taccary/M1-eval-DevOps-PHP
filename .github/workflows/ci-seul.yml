@@ -60,7 +60,7 @@ jobs:
           fi
           body=$(curl -sf "http://localhost:8080/index.php")
           if ! echo "$body" | grep -q "<title>Accueil</title>"; then
-            echo "::error::balise <title> absente ou incorrecte"
+            echo "::error::Accueil : balise <title> absente ou incorrecte"
           fi
 
       - name: "Test – Page qui n'existe pas répond 404"
