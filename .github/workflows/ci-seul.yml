@@ -26,8 +26,16 @@ jobs:
         # Cette commande cherche tous les fichiers .php et vérifie leur syntaxe [1, 2]
         run: find . -name "*.php" -exec php -l {} \;
 
-      - name: Démarrer le serveur PHP
+      - name: Démarrer le serveur PHP et attendre qu'il soit prêt
         run: php -S localhost:8080 -t site &
+          for i in {1..10}; do
+          if curl -s http://localhost:8080/index.php > /dev/null; then
+          echo "Serveur PHP prêt"
+          break
+          fi
+          echo "Attente du serveur PHP..."
+          sleep 1
+          done
 
       - name: "Test – Accueil répond 200 et contient le bon titre"
         id: test_accueil
@@ -65,9 +73,9 @@ jobs:
         continue-on-error: true
         run: |
           result="PASS"
-          body=$(curl -sf "http://localhost:8080/index.php?action=unknown")
-          if ! echo "$body" | grep -q "Page non trouvée"; then
-            echo "::error::Route inconnue : texte 'Page non trouvée' absent de la réponse"
+          code=$(curl -s -o /dev/null -w "%{http_code}" "http://localhost:8080/index.php?action=unknown")
+          if [ "$code" != "404" ]; then
+            echo "::error::404 : HTTP $code reçu, 404 attendu pour une route inconnue"
             result="FAIL"
           fi
           echo "result=$result" >> $GITHUB_OUTPUT
