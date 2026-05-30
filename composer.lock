@@ -154,10 +154,10 @@
         },
         {
             "name": "npm-asset/bootstrap",
-            "version": "5.2.3",
+            "version": "5.3.8",
             "dist": {
                 "type": "tar",
-                "url": "https://registry.npmjs.org/bootstrap/-/bootstrap-5.2.3.tgz"
+                "url": "https://registry.npmjs.org/bootstrap/-/bootstrap-5.3.8.tgz"
             },
             "type": "npm-asset",
             "license": [
