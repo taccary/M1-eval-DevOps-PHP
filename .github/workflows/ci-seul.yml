@@ -10,6 +10,7 @@ env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
+  # ── Job 1 : Syntaxe PHP ──
   php-lint:
     name: Vérification syntaxique PHP
     runs-on: ubuntu-latest
@@ -23,8 +24,22 @@ jobs:
           php-version: "8.2" # À adapter selon la version utilisée en cours
 
       - name: Analyse syntaxique (Lint)
-        # Cette commande cherche tous les fichiers .php et vérifie leur syntaxe [1, 2]
+        # Cette commande cherche tous les fichiers .php et vérifie leur syntaxe
         run: find . -name "*.php" -exec php -l {} \;
+
+  # ── Job 2 : Tests d'intégration HTTP ──
+  integration-tests:
+    name: Tests d'intégration HTTP
+    runs-on: ubuntu-latest
+    needs: php-lint # ne démarre que si le lint est vert
+    steps:
+      - name: Récupération du code
+        uses: actions/checkout@v4
+
+      - name: Installation de PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2"
 
       - name: Démarrer le serveur PHP et attendre qu'il soit prêt
         run: |
