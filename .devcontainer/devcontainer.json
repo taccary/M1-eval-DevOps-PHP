@@ -55,7 +55,7 @@
 	},
 
 	// Commande exécutée à la fin de la création du conteneur
-   "postCreateCommand": "chmod +x start.sh && chmod +x stop.sh && ./start.sh"
+   "postCreateCommand": "composer install && chmod +x start.sh && chmod +x stop.sh && ./start.sh"
 
 	// Décommenter pour se connecter en root dans le conteneur (réf. : https://aka.ms/dev-containers-non-root)
 	// "remoteUser": "root"

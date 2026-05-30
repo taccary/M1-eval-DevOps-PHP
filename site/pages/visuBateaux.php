@@ -72,11 +72,18 @@ if ((isset($_POST['niveauPMR'])) && ($_POST['niveauPMR'] != "")) {
 </div>
 
 <script>
-	$(document).ready(function() {
-		$('#myTable').DataTable({
-			language: {
-				url: '//cdn.datatables.net/plug-ins/1.13.1/i18n/fr-FR.json'
-			}
-		});
+	$('#myTable').DataTable({
+		pageLength: 10,
+		language: {
+			search: "Rechercher :",
+			lengthMenu: "Afficher _MENU_ éléments",
+			info: "Affichage de _START_ à _END_ sur _TOTAL_ éléments",
+			paginate: {
+				previous: "Précédent",
+				next: "Suivant"
+			},
+			zeroRecords: "Aucun résultat trouvé",
+			infoEmpty: "Aucun élément à afficher"
+		}
 	});
 </script>

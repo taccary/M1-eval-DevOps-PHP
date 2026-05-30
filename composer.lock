@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7b611d89ba02eee4ba212c2b9ea13d32",
+    "content-hash": "a9b5875858d9e52c5b0293044c394757",
     "packages": [
         {
             "name": "composer/installers",
@@ -178,13 +178,13 @@
         },
         {
             "name": "npm-asset/datatables.net",
-            "version": "2.3.8",
+            "version": "1.13.11",
             "dist": {
                 "type": "tar",
-                "url": "https://registry.npmjs.org/datatables.net/-/datatables.net-2.3.8.tgz"
+                "url": "https://registry.npmjs.org/datatables.net/-/datatables.net-1.13.11.tgz"
             },
             "require": {
-                "npm-asset/jquery": ">=1.7"
+                "npm-asset/jquery": ">=1.8,<5.0"
             },
             "type": "npm-asset",
             "license": [
@@ -193,14 +193,14 @@
         },
         {
             "name": "npm-asset/datatables.net-bs5",
-            "version": "1.13.4",
+            "version": "1.13.11",
             "dist": {
                 "type": "tar",
-                "url": "https://registry.npmjs.org/datatables.net-bs5/-/datatables.net-bs5-1.13.4.tgz"
+                "url": "https://registry.npmjs.org/datatables.net-bs5/-/datatables.net-bs5-1.13.11.tgz"
             },
             "require": {
-                "npm-asset/datatables.net": ">=1.12.1",
-                "npm-asset/jquery": ">=1.7"
+                "npm-asset/datatables.net": "1.13.11",
+                "npm-asset/jquery": ">=1.8,<5.0"
             },
             "type": "npm-asset",
             "license": [
