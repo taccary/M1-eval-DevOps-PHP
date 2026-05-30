@@ -193,10 +193,10 @@
         },
         {
             "name": "npm-asset/datatables.net-bs5",
-            "version": "1.13.1",
+            "version": "1.13.4",
             "dist": {
                 "type": "tar",
-                "url": "https://registry.npmjs.org/datatables.net-bs5/-/datatables.net-bs5-1.13.1.tgz"
+                "url": "https://registry.npmjs.org/datatables.net-bs5/-/datatables.net-bs5-1.13.4.tgz"
             },
             "require": {
                 "npm-asset/datatables.net": ">=1.12.1",
