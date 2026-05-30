@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "94612ebf02c7fa73aa3be30e9fdcd0b2",
+    "content-hash": "7b611d89ba02eee4ba212c2b9ea13d32",
     "packages": [
         {
             "name": "composer/installers",
@@ -178,10 +178,10 @@
         },
         {
             "name": "npm-asset/datatables.net",
-            "version": "1.13.1",
+            "version": "2.3.8",
             "dist": {
                 "type": "tar",
-                "url": "https://registry.npmjs.org/datatables.net/-/datatables.net-1.13.1.tgz"
+                "url": "https://registry.npmjs.org/datatables.net/-/datatables.net-2.3.8.tgz"
             },
             "require": {
                 "npm-asset/jquery": ">=1.7"
