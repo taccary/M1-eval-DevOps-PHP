@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a9b5875858d9e52c5b0293044c394757",
+    "content-hash": "f47ad9f794f7aac33a91b2112d2adeed",
     "packages": [
         {
             "name": "composer/installers",
@@ -166,10 +166,10 @@
         },
         {
             "name": "npm-asset/bootstrap-icons",
-            "version": "1.10.2",
+            "version": "1.13.2",
             "dist": {
                 "type": "tar",
-                "url": "https://registry.npmjs.org/bootstrap-icons/-/bootstrap-icons-1.10.2.tgz"
+                "url": "https://registry.npmjs.org/bootstrap-icons/-/bootstrap-icons-1.13.2.tgz"
             },
             "type": "npm-asset",
             "license": [
