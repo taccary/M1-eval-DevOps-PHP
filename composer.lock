@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a9b5875858d9e52c5b0293044c394757",
+    "content-hash": "435585007a1b6a9aee8d10f2207c9235",
     "packages": [
         {
             "name": "composer/installers",
@@ -154,10 +154,11 @@
         },
         {
             "name": "npm-asset/bootstrap",
-            "version": "5.3.8",
+            "version": "5.3.9",
             "dist": {
                 "type": "tar",
-                "url": "https://registry.npmjs.org/bootstrap/-/bootstrap-5.3.8.tgz"
+                "url": "https://registry.npmjs.org/bootstrap/-/bootstrap-5.3.9.tgz",
+                "shasum": "08e4c0e371fc43ab2c501cd2d3be445739cd8b13"
             },
             "type": "npm-asset",
             "license": [
