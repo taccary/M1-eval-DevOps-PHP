@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a9b5875858d9e52c5b0293044c394757",
+    "content-hash": "5d6085c05d6e50295c05c7256e209817",
     "packages": [
         {
             "name": "composer/installers",
@@ -209,10 +209,11 @@
         },
         {
             "name": "npm-asset/jquery",
-            "version": "3.6.3",
+            "version": "4.1.0",
             "dist": {
                 "type": "tar",
-                "url": "https://registry.npmjs.org/jquery/-/jquery-3.6.3.tgz"
+                "url": "https://registry.npmjs.org/jquery/-/jquery-4.1.0.tgz",
+                "shasum": "b15839cd1ea0e555ee3dce856dd9568e1b81f504"
             },
             "type": "npm-asset",
             "license": [
